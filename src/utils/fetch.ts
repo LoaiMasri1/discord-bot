@@ -10,6 +10,7 @@ export const fetch = async (
   if (!headers)
     headers = {
       "Content-Type": "application/json",
+      "Authorization" : `Bearer ${process.env.TMPD_READ_TOKEN}`
     };
 
   const response = await axios(url, {

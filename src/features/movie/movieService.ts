@@ -1,28 +1,32 @@
 import { fetch } from "../../utils";
-import { HttpParam } from "./models";
+import { HttpParam, Movie } from "./models";
+const { TMDP_URL, TMPD_READ_TOKEN } = process.env,
+  MOVIE_LIMIT = 10,
+  HTTP_PARAM = {
+    Authorization: `Bearer ${TMPD_READ_TOKEN}`,
+  } as HttpParam;
 
-const { TMDP_URL, TMDP_KEY,TMPD_READ_TOKEN } = process.env;
-
-console.log(TMDP_URL, TMDP_KEY);
-
- 
-const HTTP_PARAM = {
-  api_key: TMDP_KEY,
-  language: "en-US",
-} as HttpParam;
+const sortMoviesByPopularity = (movies: Movie[]) => {
+  return movies.sort((a, b) => b.popularity - a.popularity);
+};
 
 export const getMoviesCategories = async () => {
   const { genres } = await fetch(`${TMDP_URL}/genre/movie/list`, "GET", {
-   ...HTTP_PARAM,
-   Authorization: `Bearer ${TMPD_READ_TOKEN}`,
+    ...HTTP_PARAM,
   });
   return genres;
 };
 
-export const getMoviesByGenre = async (genreId: string) => {
-  const { results } = await fetch(`${TMDP_URL}/discover/movie`, "GET", {
-    ...HTTP_PARAM,
-    with_genres: genreId,
-  });
-  return results;
+export const getMoviesByGenre = async (
+  genreId: string,
+  limit: number = MOVIE_LIMIT
+): Promise<Movie[]> => {
+  const { results } = await fetch(
+    `${TMDP_URL}/discover/movie?sort_by=vote_average.desc&with_genres=${genreId}`,
+    "GET",
+    { ...HTTP_PARAM }
+  );
+
+  const sortedMovies = sortMoviesByPopularity(results);
+  return sortedMovies.slice(0, limit);
 };
