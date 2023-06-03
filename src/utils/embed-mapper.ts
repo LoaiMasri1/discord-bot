@@ -1,8 +1,12 @@
 import { APIEmbed, Colors } from "discord.js";
 import { Movie } from "../features/movie/models";
 import { numberFormatter } from "./formatter";
+import { movieCategoriesChoices } from "../constants";
 
 export const moviesMapper: (data: Movie[]) => APIEmbed[] = (data) => {
+
+
+  
   return data.map((movie) => {
     return {
       title: movie.title,
@@ -26,6 +30,17 @@ export const moviesMapper: (data: Movie[]) => APIEmbed[] = (data) => {
           name: "Vote Average",
           value: numberFormatter(Number(movie.vote_average.toFixed(2))),
           inline: true,
+        },
+        {
+          name: "Category",
+          value: movie.genre_ids
+            .map(
+              (id) =>
+                movieCategoriesChoices.find((choice) => choice.value === id.toString())
+                  ?.name
+            )
+            .join(", "),
+          inline: false,
         },
       ],
     } as APIEmbed;
