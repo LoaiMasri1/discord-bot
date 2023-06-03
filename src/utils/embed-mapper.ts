@@ -43,6 +43,12 @@ export const moviesMapper: (data: Movie[]) => APIEmbed[] = (data) => {
           inline: false,
         },
       ],
+      footer: {
+        text: `Page ${data.indexOf(movie) + 1} of ${data.length}`,
+      },
+
+      timestamp: new Date().toISOString(),
+      url: `https://www.themoviedb.org/movie/${movie.id}`,
     } as APIEmbed;
   });
 };

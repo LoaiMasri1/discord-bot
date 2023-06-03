@@ -1,7 +1,7 @@
 import { fetch } from "../../utils";
 import { HttpParam, Movie } from "./models";
 const { TMDP_URL, TMPD_READ_TOKEN } = process.env,
-  MOVIE_LIMIT = 10,
+  PAGE = 2,
   HTTP_PARAM = {
     Authorization: `Bearer ${TMPD_READ_TOKEN}`,
   } as HttpParam;
@@ -15,10 +15,9 @@ export const getMoviesCategories = async () => {
 
 export const getMoviesByGenre = async (
   genreId: string,
-  limit: number = MOVIE_LIMIT
 ): Promise<Movie[]> => {
   const { results } = await fetch(
-    `${TMDP_URL}/discover/movie?&language=en-US&page=2&sort_by=popularity.desc&with_genres=${genreId}`,
+    `${TMDP_URL}/discover/movie?&language=en-US&page=${PAGE}&sort_by=popularity.desc&with_genres=${genreId}`,
     "GET",
     { ...HTTP_PARAM }
   );
